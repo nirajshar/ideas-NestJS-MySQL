@@ -7,15 +7,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { IdeaModule } from './idea/idea.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [IdeaModule, 
-    TypeOrmModule.forRoot()
+    TypeOrmModule.forRoot(), UserModule
   ],
   controllers: [AppController],
-  providers: [AppService, {
-    provide: APP_FILTER,
-    useClass: HttpErrorFilter
-  }],
+  providers: [AppService],
 })
 export class AppModule {}

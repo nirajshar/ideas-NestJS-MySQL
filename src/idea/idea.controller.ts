@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { ideaDto } from './dto/ideaDto';
 import { IdeaService } from './idea.service';
 
-@Controller('idea')
+@Controller('api/idea')
 export class IdeaController {
 
     constructor(private ideaService: IdeaService) {}
