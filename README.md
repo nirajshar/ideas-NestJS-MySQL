@@ -5,14 +5,23 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">An Ideas App based on <a href="http://nodejs.org" target="_blank">NestJS</a> framework for building efficient and scalable server-side applications.</p>
+  <p align="center">An Ideas App based on <a href="http://nodejs.org" target="_blank">NestJS</a> framework to see & post ideas like reddit & twitter</p>
     <p align="center">
 
 ## User Stories
 
-- User registers with username & password
-- User Logs into his account 
+- User Registers with username & password
+- Authenticate Users
 - User can Create, Read, Update & Delete Ideas
+- Users can upvote/downvote ideas
+- Users can bookmark/save ideas
+- Users can comment on ideas
+
+## Technology Stack
+
+- Rest API : NestJS
+- Database : MySQL
+
 
 ## Authentication 
 
@@ -28,8 +37,8 @@ $ npm install
 ## Running the app
 
 ```bash
-# development
 $ npm run start
+```
 
 ## Stay in touch
 
