@@ -11,7 +11,7 @@
 ## User Stories
 
 - User Registers with username & password
-- Authenticate Users
+- Authenticate Users (JWT Token)
 - User can Create, Read, Update & Delete Ideas
 - Users can upvote/downvote ideas
 - Users can bookmark/save ideas
