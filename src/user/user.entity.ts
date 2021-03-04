@@ -21,12 +21,13 @@ export class UserEntity {
 
     @UpdateDateColumn() updated_at: Date;
 
-    @OneToMany(type => IdeaEntity, idea => idea.author)
+    @OneToMany(type => IdeaEntity, idea => idea.author, { cascade: true })
     ideas: IdeaEntity[];
 
     @ManyToMany(type => IdeaEntity, { cascade: true })
     @JoinTable()
     bookmarks: IdeaEntity[];
+    
 
 
     // --------- Developer defined Utilities for Entity

@@ -1,6 +1,4 @@
 import { userRO } from "src/user/dto/userDto";
-import { UserEntity } from "src/user/user.entity";
-import { IdeaEntity } from "../idea.entity";
 
 export interface ideaDto {
     idea: string;
