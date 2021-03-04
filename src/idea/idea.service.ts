@@ -1,6 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Param, Post, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthGuard } from 'src/shared/auth.guard';
 import { HttpErrorFilter } from 'src/shared/http-error.filter';
+import { User } from 'src/user/user.decorator';
 import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 import { ideaDto, ideaRO } from './dto/ideaDto';
@@ -14,12 +16,20 @@ export class IdeaService {
 
 
     private toResponseObject(idea: IdeaEntity): ideaRO {
-        return { ...idea, author: idea.author.toResponseObject(false) };
+        const responseObject: any = { ...idea, author: idea.author.toResponseObject(false) };
+
+        if (responseObject.upvotes) {
+            responseObject.upvotes = responseObject.upvotes.length;
+        }
+        if (responseObject.downvotes) {
+            responseObject.downvotes = responseObject.downvotes.length;
+        }
+        return responseObject;
     }
 
     async findAll(userId): Promise<ideaRO[]> {
-        // const ideas = await this.ideaRepository.find({ relations: ['author'] });
-        const ideas = await this.ideaRepository.find({  where: { author: userId }, relations: ['author'] });
+        const ideas = await this.ideaRepository.find({ relations: ['author','upvotes', 'downvotes'] });
+        // const ideas = await this.ideaRepository.find({ where: { author: userId }, relations: ['author', 'upvotes', 'downvotes'] });
         return ideas.map(idea => this.toResponseObject(idea));
     }
 
@@ -66,4 +76,37 @@ export class IdeaService {
             throw new HttpException('Incorrect user', HttpStatus.UNAUTHORIZED);
         }
     }
+
+    async bookmarkIdea(id: string, userId: string) {
+        const idea = await this.ideaRepository.findOne({ where: { id } });
+        const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['bookmarks'] });
+
+        if (user.bookmarks.filter(bookmark => bookmark.id === idea.id).length < 1 ) {
+            user.bookmarks.push(idea);
+            await this.userRepository.save(user);
+        } else {
+            throw new HttpException('Idea already bookmarked', HttpStatus.BAD_REQUEST);            
+        }
+
+        return user.toResponseObject(false);
+
+    }
+
+    async unbookmarkIdea(id: string, userId: string) {
+
+        const idea = await this.ideaRepository.findOne({ where: { id } });
+        const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['bookmarks'] });
+        
+        
+        if (user.bookmarks.filter(bookmark => bookmark.id === idea.id).length > 0 ) {
+            user.bookmarks = user.bookmarks.filter( bookmark => bookmark.id !== idea.id );
+            await this.userRepository.save(user);
+        } else {
+            throw new HttpException('Idea already not bookmarked', HttpStatus.BAD_REQUEST);            
+        }
+
+        return user.toResponseObject(false);
+
+    }
+
 }
