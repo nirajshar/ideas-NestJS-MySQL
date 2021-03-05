@@ -70,19 +70,23 @@ export class CommentService {
 
     }
 
-    async showCommentsByIdea(ideaId: string) {
-        const idea = await this.ideaRepository.findOne({
-            where: { id: ideaId },
-            relations: ['comments', 'comments.author', 'comments.idea']
+    async showCommentsByIdea(ideaId: string, page: number = 1) {
+        const comments = await this.commentRepository.find({
+            where: { idea: { id: ideaId } },
+            relations: ['author'],
+            take: 25 ,
+            skip: 25 * (page - 1)
         });
 
-        return idea.comments;
+        return comments.map(comment => this.toResponseObject(comment));
     }
 
-    async showCommentsByUser(userId: string) {
+    async showCommentsByUser(userId: string, page: number = 1) {
         const comments = await this.commentRepository.find({
             where: { author: { id: userId } },
-            relations: ['author']
+            relations: ['author'],
+            take: 25 ,
+            skip: 25 * (page - 1)
         });
 
         return comments.map(comment => this.toResponseObject(comment));

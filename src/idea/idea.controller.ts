@@ -20,9 +20,13 @@ export class IdeaController {
     }
 
     @Get()
-    @UseGuards(new AuthGuard())
-    findAll(@User('id') userId) {
-        return this.ideaService.findAll(userId);
+    findAll(@Query('page') page: number) {
+        return this.ideaService.findAll(page);
+    }
+
+    @Get('/newest')
+    findNewestIdea(@Query('page') page: number) {
+        return this.ideaService.findAll(page, true);
     }
 
     @Post()

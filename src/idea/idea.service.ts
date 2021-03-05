@@ -29,8 +29,13 @@ export class IdeaService {
         return responseObject;
     }
 
-    async findAll(userId): Promise<ideaRO[]> {
-        const ideas = await this.ideaRepository.find({ relations: ['author', 'upvotes', 'downvotes','comments'] });
+    async findAll(page: number = 1, newest?: boolean): Promise<ideaRO[]> {
+        const ideas = await this.ideaRepository.find({
+            relations: ['author', 'upvotes', 'downvotes', 'comments'],
+            take: 25,
+            skip: 25 * (page - 1),
+            order: newest && { created_at: 'DESC' }
+        });
         // const ideas = await this.ideaRepository.find({ where: { author: userId }, relations: ['author', 'upvotes', 'downvotes'] });
         return ideas.map(idea => this.toResponseObject(idea));
     }
@@ -43,7 +48,7 @@ export class IdeaService {
     }
 
     async readOne(id): Promise<ideaRO> {
-        const idea = await this.ideaRepository.findOne({ where: { id }, relations: ['author', 'upvotes', 'downvotes','comments'] });
+        const idea = await this.ideaRepository.findOne({ where: { id }, relations: ['author', 'upvotes', 'downvotes', 'comments'] });
         if (!idea) {
             throw new HttpException('Not found', HttpStatus.NOT_FOUND);
         }
